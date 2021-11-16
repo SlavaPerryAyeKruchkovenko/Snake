@@ -1,7 +1,7 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Snake from '../Models/snake'
 import Point from '../Models/Point'
-import { Stage, Layer, Circle, Text } from "react-konva";
+import { Stage, Layer, Circle } from "react-konva";
 
 const styles = {
     canvas:{
@@ -12,45 +12,46 @@ const styles = {
         display: 'block'
     },
 }
-
 const weight = document.documentElement.clientWidth
 const height = document.documentElement.clientHeight
 const startX = rndNum(weight/4,weight*3/4)
 const startY = rndNum(height/4,height*3/4)
 const radius = 20
 const snake = new Snake(radius,new Point(startX,startY))
-
-function rndNum(min,max){
-    const num = Math.floor(Math.random()*(max-min+1)+min)
-    console.log()
-    return num
+function rndNum(min,max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
+export default function Holst(){
 
-function Holst(){
+    const [body,setBody] = React.useState(snake.getBody())
+
+    useEffect(()=>{
+        setInterval(()=>{
+                console.log("set body")
+                setBody(snake.moveSnake(new Point(10,0)))
+            },1000)},[body])
+
     return(
-        <Stage width={weight}
-               height={height}
-               style={styles.canvas}>
-            <Layer>
-                {
-                    snake.getBody().map(
+        <React.Fragment>
+            <Stage width={weight}
+                   height={height}
+                   style={styles.canvas}>
+                <Layer>
+                    {body.map(
                         el => {
                             return <Circle
                                 fill="red"
                                 stroke="black"
                                 x={el.position.X}
                                 y={el.position.Y}
-                                radius={snake.size}
+                                radius={snake.radius}
                                 strokeWidht={5}
-                                />
-                        }
-                    )
-                }
-            </Layer>
-        </Stage>
+                            />
+                        })}
+                </Layer>
+            </Stage>
+        </React.Fragment>
     )
 }
-Holst.prototype = {
 
-}
-export  default  Holst
+

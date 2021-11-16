@@ -1,40 +1,44 @@
 import React from 'react'
 import Point from './Point'
+
 export default class Snake{
-    constructor(size,startPosition) {
-        this.body = []
-        this.size = size
-        this.head = new SnakeEl(startPosition)
-        this.body.push(this.head)
+    constructor(radius,startPosition) {
+        this.radius = radius
+        this.head = new SnakeEl(startPosition,radius)
+        this.#body.push(this.head)
         this.enlargeSnake()
         this.enlargeSnake()
     }
-
+    #body = []
     getHead(){
         return this.head
     }
 
     enlargeSnake(){
-        const el = this.body.pop()
+        const el = this.#body.pop()
         const point = el.position
-        console.log(point)
-        console.log(this.size)
-        const position = new Point(point.X,point.Y + this.size*2)
-        console.log(position)
-        this.body.push(el)
-        this.body.push(new SnakeEl(position))
+        const position = new Point(point.X,point.Y + this.radius*2)
+        this.#body.push(el)
+        this.#body.push(new SnakeEl(position,this.radius))
     }
 
     moveSnake(point){
-        this.body.map( x => x.position += point)
-    }
+        console.log(this.#body[0].position)
+        this.#body.map( x => {
+                x.position = new Point(x.position.X+point.X,
+                    x.position.Y+point.Y)
+        })
+        return this.#body}
 
-    getBody() {
-        return this.body
+    getBody(){
+        return this.#body
     }
 }
 class SnakeEl{
-    constructor(position) {
-        this.position = position
+    constructor(position,radius) {
+        this._position = position
+        this.radius = radius
     }
+    set position(position){this._position = position}
+    get position(){return this._position}
 }
