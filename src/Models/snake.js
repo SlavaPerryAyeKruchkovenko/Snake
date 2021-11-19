@@ -1,40 +1,47 @@
 import React from 'react'
 import Point from './Point'
-export default class Snake{
-    constructor(size,startPosition) {
-        this.body = []
-        this.size = size
-        this.head = new SnakeEl(startPosition)
-        this.body.push(this.head)
-        this.enlargeSnake()
-        this.enlargeSnake()
-    }
 
-    getHead(){
-        return this.head
+export default class Snake{
+    constructor(radius,startPosition) {
+        this.radius = radius
+        this.head = new SnakeEl(startPosition,radius,true)
+        this.#body.push(this.head)
+        this.enlargeSnake()
+        this.enlargeSnake()
     }
+    #body = []
 
     enlargeSnake(){
-        const el = this.body.pop()
+        const el = this.#body.pop()
         const point = el.position
-        console.log(point)
-        console.log(this.size)
-        const position = new Point(point.X,point.Y + this.size*2)
-        console.log(position)
-        this.body.push(el)
-        this.body.push(new SnakeEl(position))
+        const position = new Point(point.X,point.Y + this.radius*2)
+        this.#body.push(el)
+        this.#body.push(new SnakeEl(position,this.radius,false))
     }
 
-    moveSnake(point){
-        this.body.map( x => x.position += point)
+    moveSnake(direction,speed){
+        this.#body.pop()
+        const loc = new Point(
+            (this.head.position.X+2*this.radius* direction.X)  * speed,
+            (this.head.position.Y+2*this.radius* direction.Y)  * speed)
+        this.head.isHead = false;
+        const head = new SnakeEl(loc,this.head.radius,true)
+        this.#body.unshift(head)
+        this.head = head
+        return head
     }
-
-    getBody() {
-        return this.body
+    getBody(){
+        return this.#body
     }
 }
 class SnakeEl{
-    constructor(position) {
-        this.position = position
+    constructor(position,radius,isHead) {
+        this._position = position
+        this.radius = radius
+        this.isHead = isHead
     }
+    set position(position){this._position = position}
+    get position(){return this._position}
+    get isHead(){return this._isHead}
+    set isHead(value){this._isHead = value}
 }

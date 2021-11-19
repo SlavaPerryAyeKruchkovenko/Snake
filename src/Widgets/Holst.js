@@ -1,7 +1,7 @@
 import React from 'react'
-import Snake from '../Models/snake'
 import Point from '../Models/Point'
-import { Stage, Layer, Circle, Text } from "react-konva";
+import { Stage, Layer, Circle } from "react-konva";
+import Head from './Head'
 
 const styles = {
     canvas:{
@@ -13,44 +13,50 @@ const styles = {
     },
 }
 
-const weight = document.documentElement.clientWidth
-const height = document.documentElement.clientHeight
-const startX = rndNum(weight/4,weight*3/4)
-const startY = rndNum(height/4,height*3/4)
-const radius = 20
-const snake = new Snake(radius,new Point(startX,startY))
+export default function Holst({weight,height,body,radius,vector}){
+    function correctLoc(el){
+        if(el.position.X > weight){
+            console.log(el.position.X)
+            el.position = new Point(0,el.position.Y)
+        }
+        if(el.position.Y > height){
+            console.log("any")
+            el.position = new Point(el.position.X,0)
+        }
+        if(el.position.X < 0){
+            el.position = new Point(weight,el.position.Y)
+        }
+        if(el.position.Y < 0){
+            el.position = new Point(el.position.X,height)
+        }
+        return el.position
+    }
+    function cnvrtEeysVector(loc){
 
-function rndNum(min,max){
-    const num = Math.floor(Math.random()*(max-min+1)+min)
-    console.log()
-    return num
-}
-
-function Holst(){
+    }
     return(
-        <Stage width={weight}
-               height={height}
-               style={styles.canvas}>
-            <Layer>
-                {
-                    snake.getBody().map(
+        <React.Fragment>
+            <Stage width={weight}
+                   height={height}
+                   style={styles.canvas}>
+                <Layer>
+                    {body.map(
                         el => {
-                            return <Circle
-                                fill="red"
-                                stroke="black"
-                                x={el.position.X}
-                                y={el.position.Y}
-                                radius={snake.size}
-                                strokeWidht={5}
-                                />
-                        }
-                    )
-                }
-            </Layer>
-        </Stage>
-    )
+                            const x = correctLoc(el).X
+                            const y = correctLoc(el).Y
+                            return  el.isHead
+                                ?<Head x={x} y={y} radius={radius}
+                                vector={vector}/>
+                                :<Circle fill="red" stroke="black"
+                                    x={x}
+                                    y={y}
+                                    radius={radius}
+                                    strokeWidht={5}/>
+                        })}
+                </Layer>
+            </Stage>
+        </React.Fragment>
+    );
 }
-Holst.prototype = {
 
-}
-export  default  Holst
+
