@@ -24,6 +24,7 @@ export default class Snake{
         const loc = new Point(
             (this.head.position.X+2*this.radius* direction.X)  * speed,
             (this.head.position.Y+2*this.radius* direction.Y)  * speed)
+        this.head.isHead = false;
         const head = new SnakeEl(loc,this.head.radius,true)
         this.#body.unshift(head)
         this.head = head
@@ -37,10 +38,10 @@ class SnakeEl{
     constructor(position,radius,isHead) {
         this._position = position
         this.radius = radius
-        this._isHead = isHead
+        this.isHead = isHead
     }
     set position(position){this._position = position}
     get position(){return this._position}
     get isHead(){return this._isHead}
-
+    set isHead(value){this._isHead = value}
 }
