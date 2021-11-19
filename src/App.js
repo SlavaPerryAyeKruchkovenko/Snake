@@ -1,22 +1,18 @@
 import './App.css';
 import Holst from './Widgets/Holst'
-import React, {useEffect} from 'react'
+import React,{useEffect} from 'react'
 import Point from "./Models/Point";
-import Snake from "./Models/snake";
 import $ from 'jquery';
+import Snake from "./Models/snake";
 
 let weight = document.documentElement.clientWidth
 let height = document.documentElement.clientHeight
+let vector = new Point(-0.3,-0.7)
+let foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
 const startX = rndNum(weight/4,weight*3/4)
 const startY = rndNum(height/4,height*3/4)
 const radius = 20
 const snake = new Snake(radius,new Point(startX,startY))
-
-let vector = new Point(-0.3,-0.7)
-
-function rndNum(min,max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
 
 $(document).ready(function($) {
     $(window).resize(function() {
@@ -25,18 +21,27 @@ $(document).ready(function($) {
         height = document.documentElement.clientHeight
     })})
 
+function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
+
 function App() {
     window.$ = window.jQuery = $;
-    const [head,setHead] = React.useState(snake.getBody())
+
+    document.addEventListener("keydown",keyPush)
+    const [head,setHead] = React.useState(snake.head)
+    console.log(head)
+    console.log(foodLoc)
+    if(head.position.X > foodLoc.X-radius && head.position.X < foodLoc.X-radius
+        && head.position.Y > foodLoc.Y-radius && head.position.Y < foodLoc.Y-radius){
+        snake.enlargeSnake()
+        console.log("up")
+    }
 
     useEffect(()=>{
         const interval = setInterval(()=>{
             setHead(snake.moveSnake(vector,1))
-        },1000/15);
+        },1000);
         return () => clearInterval(interval)
     },[])
-    document.addEventListener("keydown",keyPush)
-
     function keyPush(evt) {
         switch(evt.keyCode) {
             case 37:
@@ -50,8 +55,10 @@ function App() {
         }}
 
   return (
-        <Holst weight={weight} height={height} radius={snake.radius}
-          body={snake.getBody()} vector={vector}/>
+      <React.Fragment>
+          <Holst weight={weight} height={height} vector={vector}
+                 radius={radius} body={snake.getBody()} foodLoc={foodLoc}/>
+      </React.Fragment>
   );
 }
 
