@@ -7,14 +7,25 @@ import Proptypes from 'prop-types'
 const styles = {
     canvas:{
         background: 'white',
-        padding: '0',
+        padding: '0px',
         marginRight: 'auto',
         marginLeft: 'auto',
         display: 'block'
     },
+    food:{
+        position: 'absolute',
+        margin: '0px',
+        padding: '0px',
+    },
+    stage:{
+        margin: '0px',
+        padding: '0px',
+    },
 }
 
-function Holst({weight,height,body,radius,vector,foodLoc}){
+function Holst(props){
+    const {weight} = props
+    const {height} = props
     function correctLoc(el){
         if(el.position.X > weight){
             el.position = new Point(0,el.position.Y)}
@@ -28,26 +39,27 @@ function Holst({weight,height,body,radius,vector,foodLoc}){
 
     return(
         <React.Fragment>
-            <Stage width={weight}
-                   height={height}
-                   style={styles.canvas}>
-                <Layer>
+            <Stage width={props.weight}
+                   height={props.height}>
+                <Layer style={styles.canvas}>
                     <div>
-                        {body.map(el => {
+                        {props.body.map(el => {
                         const x = correctLoc(el).X
                         const y = correctLoc(el).Y
                         return  el.isHead
-                            ?<Head x={x} y={y} radius={radius}
-                                 vector={vector}/>
+                            ?<Head x={x} y={y} radius={el.radius}
+                                 vector={props.vector}/>
                             :<Circle fill="red" stroke="black"
                                  x={x}
                                  y={y}
-                                 radius={radius}
+                                 radius={el.radius}
                                  strokeWidht={5}/>})}
-                        <Circle fill="red"
-                            radius={radius}
-                            x={foodLoc.X}
-                            y={foodLoc.Y}/>
+                        <Circle styles={styles.food}
+                            radius={props.radius}
+                            x={props.foodLoc.X}
+                            y={props.foodLoc.Y}
+                            fill='yellow' stroke="black"
+                            strokeWidht={5}/>
                     </div>
                 </Layer>
             </Stage>
@@ -57,6 +69,7 @@ function Holst({weight,height,body,radius,vector,foodLoc}){
 Holst.prototype = {
     weight: Proptypes.number.isRequired,
     height: Proptypes.number.isRequired,
+    radius: Proptypes.number.isRequired,
 }
 export default Holst
 

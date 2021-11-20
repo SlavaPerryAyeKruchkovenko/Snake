@@ -9,9 +9,9 @@ let weight = document.documentElement.clientWidth
 let height = document.documentElement.clientHeight
 let vector = new Point(-0.3,-0.7)
 let foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
+let radius = 20
 const startX = rndNum(weight/4,weight*3/4)
 const startY = rndNum(height/4,height*3/4)
-const radius = 20
 const snake = new Snake(radius,new Point(startX,startY))
 
 $(document).ready(function($) {
@@ -28,18 +28,18 @@ function App() {
 
     document.addEventListener("keydown",keyPush)
     const [head,setHead] = React.useState(snake.head)
-    console.log(head)
-    console.log(foodLoc)
-    if(head.position.X > foodLoc.X-radius && head.position.X < foodLoc.X-radius
-        && head.position.Y > foodLoc.Y-radius && head.position.Y < foodLoc.Y-radius){
+
+    if(head.position.X >= foodLoc.X-radius && head.position.X <= foodLoc.X+radius
+        && head.position.Y >= foodLoc.Y-radius && head.position.Y <= foodLoc.Y+radius){
         snake.enlargeSnake()
-        console.log("up")
+        foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
     }
 
     useEffect(()=>{
         const interval = setInterval(()=>{
+            radius = radius=== 26?20:radius+2
             setHead(snake.moveSnake(vector,1))
-        },1000);
+        },1000/15);
         return () => clearInterval(interval)
     },[])
     function keyPush(evt) {
