@@ -14,12 +14,13 @@ const styles = {
     },
     food:{
         position: 'absolute',
+    },
+    default:{
         margin: '0px',
         padding: '0px',
     },
-    stage:{
-        margin: '0px',
-        padding: '0px',
+    snakeEl:{
+        position: '-webkit-sticky',
     },
 }
 
@@ -38,32 +39,31 @@ function Holst(props){
         return el.position}
 
     return(
-        <React.Fragment>
-            <Stage width={props.weight}
-                   height={props.height}>
-                <Layer style={styles.canvas}>
-                    <div>
-                        {props.body.map(el => {
-                        const x = correctLoc(el).X
-                        const y = correctLoc(el).Y
-                        return  el.isHead
-                            ?<Head x={x} y={y} radius={el.radius}
-                                 vector={props.vector}/>
-                            :<Circle fill="red" stroke="black"
-                                 x={x}
-                                 y={y}
-                                 radius={el.radius}
-                                 strokeWidht={5}/>})}
-                        <Circle styles={styles.food}
-                            radius={props.radius}
-                            x={props.foodLoc.X}
-                            y={props.foodLoc.Y}
-                            fill='yellow' stroke="black"
-                            strokeWidht={5}/>
-                    </div>
-                </Layer>
-            </Stage>
-        </React.Fragment>
+        <Stage width={props.weight}
+               height={props.height}>
+            <Layer style={styles.canvas}>
+                <div className={styles.default}>
+                    {props.body.map(el => {
+                    const x = correctLoc(el).X
+                    const y = correctLoc(el).Y
+                    return  el.isHead
+                        ?<Head x={x} y={y} radius={el.radius}
+                             vector={props.vector}/>
+                        :<Circle fill="red" stroke="black"
+                             style={styles.snakeEl}
+                             x={x}
+                             y={y}
+                             radius={el.radius}
+                             strokeWidht={5}/>})}
+                    <Circle styles={styles.food}
+                        radius={props.radius}
+                        x={props.foodLoc.X}
+                        y={props.foodLoc.Y}
+                        fill='yellow' stroke="black"
+                        strokeWidht={5}/>
+                </div>
+            </Layer>
+        </Stage>
     );
 }
 Holst.prototype = {

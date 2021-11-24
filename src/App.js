@@ -6,26 +6,26 @@ import $ from 'jquery';
 import Snake from "./Models/snake";
 
 let weight = document.documentElement.clientWidth
-let height = document.documentElement.clientHeight
+let height = document.documentElement.clientHeight-10
 let vector = new Point(-0.3,-0.7)
 let foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
 let radius = 20
 const startX = rndNum(weight/4,weight*3/4)
 const startY = rndNum(height/4,height*3/4)
 const snake = new Snake(radius,new Point(startX,startY))
+let score = 0
 
 $(document).ready(function($) {
     $(window).resize(function() {
-        console.log("resize")
         weight = document.documentElement.clientWidth
         height = document.documentElement.clientHeight
+        foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
     })})
 
 function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
 
 function App() {
     window.$ = window.jQuery = $;
-
     document.addEventListener("keydown",keyPush)
     const [head,setHead] = React.useState(snake.head)
 
@@ -33,6 +33,7 @@ function App() {
         && head.position.Y >= foodLoc.Y-radius && head.position.Y <= foodLoc.Y+radius){
         snake.enlargeSnake()
         foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
+        score++
     }
 
     useEffect(()=>{
@@ -42,6 +43,7 @@ function App() {
         },1000/15);
         return () => clearInterval(interval)
     },[])
+
     function keyPush(evt) {
         switch(evt.keyCode) {
             case 37:
@@ -55,10 +57,11 @@ function App() {
         }}
 
   return (
-      <React.Fragment>
+      <div className='default'>
+          <p className="scoreBar">Score= {score}</p>
           <Holst weight={weight} height={height} vector={vector}
                  radius={radius} body={snake.getBody()} foodLoc={foodLoc}/>
-      </React.Fragment>
+      </div>
   );
 }
 
