@@ -56,7 +56,7 @@ function Holst(props){
                              radius={el.radius}
                              strokeWidht={5}/>})}
                     <Circle styles={styles.food}
-                        radius={props.radius}
+                        radius={props.foodRadius}
                         x={props.foodLoc.X}
                         y={props.foodLoc.Y}
                         fill='yellow' stroke="black"
@@ -69,7 +69,7 @@ function Holst(props){
 Holst.prototype = {
     weight: Proptypes.number.isRequired,
     height: Proptypes.number.isRequired,
-    radius: Proptypes.number.isRequired,
+    foodRadius: Proptypes.number.isRequired,
 }
 export default Holst
 

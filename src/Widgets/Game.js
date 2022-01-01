@@ -4,21 +4,28 @@ import Point from "../Models/Point";
 import "../Models/Point";
 import Proptypes from "prop-types";
 import $ from "jquery";
-import Snake from "../Models/snake";
 
 let vector = new Point(-0.3, -0.7)
 let weight = document.documentElement.clientWidth
 let height = document.documentElement.clientHeight - 10
 let foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
-let radius = 20
+let foodRadius = 20
 let score = 0
 
+const maxRadius = 26;
+const time = 1000/15
 const startX = rndNum(weight / 4, weight * 3 / 4)
 const startY = rndNum(height / 4, height * 3 / 4)
-//const snake = new Snake(20, new Point(startX, startY))
 
 function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
 function dropScore() {score = 0}
+function checkLoc(snake,location,radius,anotherFunc=null){
+    return snake.getBody().some(el => {
+        if((anotherFunc ==null || anotherFunc(el)) && location.X >= el.position.X-radius && location.X <= el.position.X+radius
+            && location.Y >= el.position.Y-radius && location.Y <= el.position.Y+radius) {
+            return true;
+        }})
+}
 function keyPush(evt) {
     switch (evt.keyCode) {
         case 37:
@@ -45,48 +52,52 @@ $(document).ready(function($) {
     })})
 
 function Game(props) {
-
     const {snake} = props
     const {closeGame} = props
     const [head, setHead] = React.useState(snake.head)
+    let canMove = true;
 
-    if (head.position.X >= foodLoc.X - radius && head.position.X <= foodLoc.X + radius
-        && head.position.Y >= foodLoc.Y - radius && head.position.Y <= foodLoc.Y + radius) {
-        snake.enlargeSnake()
-        foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
+    if (head.position.X >= foodLoc.X - foodRadius && head.position.X <= foodLoc.X + foodRadius
+        && head.position.Y >= foodLoc.Y - foodRadius && head.position.Y <= foodLoc.Y + foodRadius) {
+
+        snake.enlargeSnake();
+        if(checkLoc(snake,foodLoc,maxRadius)){
+            foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
+        }
+        else {
+            const body = snake.getBody()
+            const x =body[body.length - 1].position.X
+            const y =body[body.length - 1].position.Y+snake.radius
+            foodLoc = new Point(x,y)
+        }
         score++
     }
-
-    snake.getBody().forEach(el => {
-        if(!el.isHead && head.position.X >= el.position.X-radius && head.position.X <= el.position.X+radius
-            && head.position.Y >= el.position.Y-radius && head.position.Y <= el.position.Y+radius) {
-            alert('your lose')
-            console.log('your lose')
-            closeGame()
-            // snake = new Snake(radius, new Point(startX, startY));
-            // setHead(snake.head)
-        }})
-
+    if(checkLoc(snake,head.position,snake.radius,(el)=>!el.isHead)){
+        alert('your lose')
+        closeGame()
+        foodRadius = 20;
+        vector = new Point(-0.3, -0.7)
+    }
     useEffect(()=>{
         const interval = setInterval(()=>{
-            radius = radius=== 26?20:radius+2
+            foodRadius = foodRadius=== maxRadius?20:foodRadius+2
             setHead(snake.moveSnake(vector,1))
-        },1000/15);
+        },time);
         return () => clearInterval(interval)
-    },[])
+    },[head])
+
 
     return(
         <div className='default'>
             <p className="scoreBar">Score: {score}</p>
             <Holst weight={weight} height={height} vector={vector}
-                   radius={radius} body={snake.getBody()} foodLoc={foodLoc}/>
+                   foodRadius={foodRadius} body={snake.getBody()} foodLoc={foodLoc}/>
         </div>)
 }
 Game.prototype ={
     closeGame: Proptypes.function,
     weight: Proptypes.number.isRequired,
     height: Proptypes.number.isRequired,
-    score: Proptypes.number.isRequired
 }
 export default Game
-export {startX, startY, radius, dropScore}
+export {startX, startY, dropScore}
