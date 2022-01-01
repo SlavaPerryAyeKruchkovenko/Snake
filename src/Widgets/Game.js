@@ -12,11 +12,13 @@ let height = document.documentElement.clientHeight - 10
 let foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
 let radius = 20
 let score = 0
+
 const startX = rndNum(weight / 4, weight * 3 / 4)
 const startY = rndNum(height / 4, height * 3 / 4)
-const snake = new Snake(radius, new Point(startX, startY))
+//const snake = new Snake(20, new Point(startX, startY))
 
 function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
+function dropScore() {score = 0}
 function keyPush(evt) {
     switch (evt.keyCode) {
         case 37:
@@ -42,24 +44,27 @@ $(document).ready(function($) {
         foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
     })})
 
-function Game(props){
+function Game(props) {
 
+    const {snake} = props
     const {closeGame} = props
-    const [head,setHead] = React.useState(snake.head)
+    const [head, setHead] = React.useState(snake.head)
 
-    if(head.position.X >= foodLoc.X-radius && head.position.X <= foodLoc.X+radius
-        && head.position.Y >= foodLoc.Y-radius && head.position.Y <= foodLoc.Y+radius){
+    if (head.position.X >= foodLoc.X - radius && head.position.X <= foodLoc.X + radius
+        && head.position.Y >= foodLoc.Y - radius && head.position.Y <= foodLoc.Y + radius) {
         snake.enlargeSnake()
-        foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
+        foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
         score++
     }
 
     snake.getBody().forEach(el => {
         if(!el.isHead && head.position.X >= el.position.X-radius && head.position.X <= el.position.X+radius
-            && head.position.Y >= el.position.Y-radius && head.position.Y <= el.position.Y+radius){
-            closeGame()
+            && head.position.Y >= el.position.Y-radius && head.position.Y <= el.position.Y+radius) {
             alert('your lose')
-            console.log('you lose')
+            console.log('your lose')
+            closeGame()
+            // snake = new Snake(radius, new Point(startX, startY));
+            // setHead(snake.head)
         }})
 
     useEffect(()=>{
@@ -72,7 +77,7 @@ function Game(props){
 
     return(
         <div className='default'>
-            <p className="scoreBar">Score= {score}</p>
+            <p className="scoreBar">Score: {score}</p>
             <Holst weight={weight} height={height} vector={vector}
                    radius={radius} body={snake.getBody()} foodLoc={foodLoc}/>
         </div>)
@@ -84,3 +89,4 @@ Game.prototype ={
     score: Proptypes.number.isRequired
 }
 export default Game
+export {startX, startY, radius, dropScore}

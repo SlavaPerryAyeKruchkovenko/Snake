@@ -1,15 +1,25 @@
 import './App.css';
-import React from 'react'
-import Game from "./Widgets/Game"
+import React,{useEffect} from 'react'
+import Game, {startX, startY, radius, dropScore} from "./Widgets/Game"
+import Menu from "./Widgets/Menu"
+import Snake from "./Models/snake";
+import Point from "./Models/Point";
 
 function App() {
-    const [play, setPlay] = React.useState(true)
+
+    const [game, setGame] = React.useState(null);
 
     function closeGame() {
-        setPlay(false)
+        setGame(null);
+        dropScore()
+    }
+
+    function startGame(){
+        function createSnake() { return new Snake(radius, new Point(startX, startY)) }
+        setGame(<Game closeGame={closeGame} snake={createSnake()}/>)
     }
     return (
-        play ? <Game closeGame={closeGame} /> : <div/>);
+        game?? <Menu startGame={startGame}/>);
 }
 
 export default App;
