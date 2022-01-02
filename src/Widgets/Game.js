@@ -19,12 +19,15 @@ const startY = rndNum(height / 4, height * 3 / 4)
 
 function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
 function dropScore() {score = 0}
-function checkLoc(snake,location,radius,anotherFunc=null){
+function checkBodyOnCollision(snake,objLoc,radius,anotherFunc=null){
     return snake.getBody().some(el => {
-        if((anotherFunc ==null || anotherFunc(el)) && location.X >= el.position.X-radius && location.X <= el.position.X+radius
-            && location.Y >= el.position.Y-radius && location.Y <= el.position.Y+radius) {
+        if((anotherFunc ==null || anotherFunc(el)) && checkOnCollision(objLoc,el.position,radius)) {
             return true;
         }})
+}
+function checkOnCollision(loc,secondLoc,radius){
+    return loc.X >= secondLoc.X - radius && loc.X <= secondLoc.X + radius
+        && loc.Y >= secondLoc.Y - radius && loc.Y <= secondLoc.Y + radius
 }
 function keyPush(evt) {
     switch (evt.keyCode) {
@@ -55,13 +58,11 @@ function Game(props) {
     const {snake} = props
     const {closeGame} = props
     const [head, setHead] = React.useState(snake.head)
-    let canMove = true;
+    let isPlay = true;
 
-    if (head.position.X >= foodLoc.X - foodRadius && head.position.X <= foodLoc.X + foodRadius
-        && head.position.Y >= foodLoc.Y - foodRadius && head.position.Y <= foodLoc.Y + foodRadius) {
-
+    if (checkOnCollision(head.position,foodLoc,foodRadius)) {
         snake.enlargeSnake();
-        if(checkLoc(snake,foodLoc,maxRadius)){
+        if(checkBodyOnCollision(snake,foodLoc,maxRadius)){
             foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
         }
         else {
@@ -72,18 +73,21 @@ function Game(props) {
         }
         score++
     }
-    if(checkLoc(snake,head.position,snake.radius,(el)=>!el.isHead)){
+    if(checkBodyOnCollision(snake,head.position,snake.radius,(el)=>!el.isHead)){
         alert('your lose')
         closeGame()
-        foodRadius = 20;
+        foodRadius = 20
         vector = new Point(-0.3, -0.7)
+        isPlay = false;
     }
     useEffect(()=>{
-        const interval = setInterval(()=>{
-            foodRadius = foodRadius=== maxRadius?20:foodRadius+2
-            setHead(snake.moveSnake(vector,1))
-        },time);
-        return () => clearInterval(interval)
+        if(isPlay){
+            const interval = setInterval(()=>{
+                foodRadius = foodRadius=== maxRadius?20:foodRadius+2
+                setHead(snake.moveSnake(vector,1))
+            },time);
+            return () => clearInterval(interval)
+        }
     },[head])
 
 

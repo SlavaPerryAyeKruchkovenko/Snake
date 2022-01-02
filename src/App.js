@@ -1,5 +1,5 @@
 import './App.css';
-import React,{useEffect} from 'react'
+import React from 'react'
 import Game, {startX, startY, dropScore} from "./Widgets/Game"
 import Menu from "./Widgets/Menu"
 import Snake from "./Models/snake";
@@ -8,9 +8,9 @@ const radius = 20;
 function App() {
 
     const [game, setGame] = React.useState(null);
-    async function closeGame() {
-        await setGame(null)
-        dropScore()
+    function closeGame() {
+        setGame(null)
+        //dropScore()
     }
 
     function startGame(){
