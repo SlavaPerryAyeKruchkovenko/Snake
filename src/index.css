@@ -32,6 +32,15 @@ code {
   z-index: 2;
   font-weight: bold;
 }
+.video {
+  overflow: hidden;
+  z-index: -100;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
 .default{
   margin: 0;
   padding: 0;

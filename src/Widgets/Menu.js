@@ -1,31 +1,42 @@
 import React from "react";
 
 const styles = {
+    main:{
+        width:'100%',
+        height:'100%',
+        margin:'0',
+    },
     menu:{
-        background: 'red',
+        background: '#3FEEE6',
         padding: '0px',
-        marginBottom: '25%',
-        marginTop:'25%',
-        marginLeft:'auto',
-        marginRight:'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '10%',
         height:'50%',
         width:'50%',
         borderRadius: '20px',
     },
     name:{
-        fontsize:'24px',
+        fontSize:'24px',
         textAlign:'center',
         padding:'10px',
+        color:'#1A1A1D',
     },
     btn:{
         padding: '10px',
         width: '90%',
-        background: 'yellow',
+        background: '#FC4445',
         borderRadius: '15px',
-        margin:'10px',
+        marginTop:'10px',
+        marginBottom:'10px',
+        marginLeft:'5%',
+        fontSize: '18px',
+        fontWeight: 'bold',
     },
     listView:{
         height: '100%',
+        listStyleType: 'none',
+        paddingLeft: 0,
     }
 }
 function Menu(props){
@@ -36,15 +47,24 @@ function Menu(props){
         //todo open records
     }
     const {startGame} = props;
+    const {exit} = props;
     return(
-        <div style={styles.menu}>
-            <p style={styles.name}>🆂🅽🅰🅺🅴 🆂🅴🅰🆂🅾🅽 🐍</p>
-            <ul style={styles.listView}>
-                <li><button onClick={startGame} style={styles.btn}>Start</button></li>
-                <li><button onClick={openSetting} style={styles.btn}>Settings</button></li>
-                <li><button onClick={openRecords} style={styles.btn}>Records</button></li>
-            </ul>
+        <div style={styles.main}>
+            <div style={styles.menu}>
+                <p style={styles.name}>🆂🅽🅰🅺🅴 🆂🅴🅰🆂🅾🅽 🐍</p>
+                <ul style={styles.listView}>
+                    <li><button onClick={startGame} style={styles.btn}>sᴛᴀʀᴛ</button></li>
+                    <li><button onClick={openSetting} style={styles.btn}>sᴇᴛᴛɪɴɢs</button></li>
+                    <li><button onClick={openRecords} style={styles.btn}>ʀᴇᴄᴏʀᴅs</button></li>
+                    <li><button onClick={exit} style={styles.btn}>ᴄʟᴏsᴇ ɢᴀᴍᴇ</button></li>
+                </ul>
+            </div>
+            <video className="video" poster="./Assets/snake.jpg">
+                <source src="../Assets/snake.mp4" type="video/mp4"></source>
+            </video>
         </div>
+
+
     );
 }
 export default Menu;

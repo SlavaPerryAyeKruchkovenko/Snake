@@ -21,7 +21,7 @@ function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + mi
 function dropScore() {score = 0}
 function checkBodyOnCollision(snake,objLoc,radius,anotherFunc=null){
     return snake.getBody().some(el => {
-        if((anotherFunc ==null || anotherFunc(el)) && checkOnCollision(objLoc,el.position,radius)) {
+        if((anotherFunc == null || anotherFunc(el)) && checkOnCollision(objLoc,el.position,radius)) {
             return true;
         }})
 }
@@ -77,6 +77,7 @@ function Game(props) {
         alert('your lose')
         closeGame()
         foodRadius = 20
+        score = 0;
         vector = new Point(-0.3, -0.7)
         isPlay = false;
     }

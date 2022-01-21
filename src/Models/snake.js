@@ -2,12 +2,13 @@ import React from 'react'
 import Point from './Point'
 
 export default class Snake{
-    constructor(radius,startPosition) {
+    constructor(radius,startPosition,size) {
         this.radius = radius
         this.head = new SnakeEl(startPosition,radius,true)
         this.#body.push(this.head)
-        this.enlargeSnake()
-        this.enlargeSnake()
+        for (let i = 0; i < size; i++) {
+            this.enlargeSnake()
+        }
     }
     #body = []
 
