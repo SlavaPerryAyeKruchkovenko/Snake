@@ -1,5 +1,6 @@
 import React from "react";
-
+import SnakeMp4 from "../Assets/snake.mp4";
+import SnakeJpg from "../Assets/snake.jpg";
 const styles = {
     main:{
         width:'100%',
@@ -11,7 +12,7 @@ const styles = {
         padding: '0px',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '10%',
+        marginTop: '18%',
         height:'50%',
         width:'50%',
         borderRadius: '20px',
@@ -59,8 +60,9 @@ function Menu(props){
                     <li><button onClick={exit} style={styles.btn}>ᴄʟᴏsᴇ ɢᴀᴍᴇ</button></li>
                 </ul>
             </div>
-            <video className="video" poster="./Assets/snake.jpg">
-                <source src="../Assets/snake.mp4" type="video/mp4"></source>
+            <video className="video" loop autoPlay muted
+                poster={SnakeJpg}>
+                <source src={SnakeMp4} type="video/mp4"></source>
             </video>
         </div>
 
