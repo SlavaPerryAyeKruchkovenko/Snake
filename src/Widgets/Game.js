@@ -1,9 +1,8 @@
-import React,{useEffect} from 'react';
+import React, {useEffect} from 'react';
 import Holst from "./Holst";
 import Point from "../Models/Point";
 import "../Models/Point";
 import Proptypes from "prop-types";
-import $ from "jquery";
 
 let vector = new Point(-0.3, -0.7)
 let weight = document.documentElement.clientWidth
@@ -13,22 +12,31 @@ let foodRadius = 20
 let score = 0
 
 const maxRadius = 26;
-const time = 1000/15
+const time = 1000 / 15
 const startX = rndNum(weight / 4, weight * 3 / 4)
 const startY = rndNum(height / 4, height * 3 / 4)
 
-function rndNum(min,max) {return Math.floor(Math.random() * (max - min + 1) + min)}
-function dropScore() {score = 0}
-function checkBodyOnCollision(snake,objLoc,radius,anotherFunc=null){
-    return snake.getBody().some(el => {
-        if((anotherFunc ==null || anotherFunc(el)) && checkOnCollision(objLoc,el.position,radius)) {
-            return true;
-        }})
+function rndNum(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
-function checkOnCollision(loc,secondLoc,radius){
+
+function dropScore() {
+    score = 0
+}
+
+function checkBodyOnCollision(snake, objLoc, radius, anotherFunc = null) {
+    return snake.getBody().some(el => {
+        if ((anotherFunc == null || anotherFunc(el)) && checkOnCollision(objLoc, el.position, radius)) {
+            return true;
+        }
+    })
+}
+
+function checkOnCollision(loc, secondLoc, radius) {
     return loc.X >= secondLoc.X - radius && loc.X <= secondLoc.X + radius
         && loc.Y >= secondLoc.Y - radius && loc.Y <= secondLoc.Y + radius
 }
+
 function keyPush(evt) {
     switch (evt.keyCode) {
         case 37:
@@ -45,14 +53,13 @@ function keyPush(evt) {
             break
     }
 }
-window.$ = window.jQuery = $;
-document.addEventListener("keydown", keyPush)
-$(document).ready(function($) {
-    $(window).resize(function() {
-        weight = document.documentElement.clientWidth
-        height = document.documentElement.clientHeight
-        foodLoc = new Point(rndNum(10,weight-10),rndNum(10,height-10))
-    })})
+
+window.addEventListener("keydown", keyPush)
+window.addEventListener("resize", function () {
+    weight = document.documentElement.clientWidth
+    height = document.documentElement.clientHeight
+    foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
+})
 
 function Game(props) {
     const {snake} = props
@@ -60,45 +67,46 @@ function Game(props) {
     const [head, setHead] = React.useState(snake.head)
     let isPlay = true;
 
-    if (checkOnCollision(head.position,foodLoc,foodRadius)) {
+    if (checkOnCollision(head.position, foodLoc, foodRadius)) {
         snake.enlargeSnake();
-        if(checkBodyOnCollision(snake,foodLoc,maxRadius)){
+        if (checkBodyOnCollision(snake, foodLoc, maxRadius)) {
             foodLoc = new Point(rndNum(10, weight - 10), rndNum(10, height - 10))
-        }
-        else {
+        } else {
             const body = snake.getBody()
-            const x =body[body.length - 1].position.X
-            const y =body[body.length - 1].position.Y+snake.radius
-            foodLoc = new Point(x,y)
+            const x = body[body.length - 1].position.X
+            const y = body[body.length - 1].position.Y + snake.radius
+            foodLoc = new Point(x, y)
         }
         score++
     }
-    if(checkBodyOnCollision(snake,head.position,snake.radius,(el)=>!el.isHead)){
+    if (checkBodyOnCollision(snake, head.position, snake.radius, (el) => !el.isHead)) {
         alert('your lose')
         closeGame()
         foodRadius = 20
+        score = 0;
         vector = new Point(-0.3, -0.7)
         isPlay = false;
     }
-    useEffect(()=>{
-        if(isPlay){
-            const interval = setInterval(()=>{
-                foodRadius = foodRadius=== maxRadius?20:foodRadius+2
-                setHead(snake.moveSnake(vector,1))
-            },time);
+    useEffect(() => {
+        if (isPlay) {
+            const interval = setInterval(() => {
+                foodRadius = foodRadius === maxRadius ? 20 : foodRadius + 2
+                setHead(snake.moveSnake(vector, 1))
+            }, time);
             return () => clearInterval(interval)
         }
-    },[head])
+    }, [head, isPlay, snake])
 
 
-    return(
+    return (
         <div className='default'>
             <p className="scoreBar">Score: {score}</p>
             <Holst weight={weight} height={height} vector={vector}
                    foodRadius={foodRadius} body={snake.getBody()} foodLoc={foodLoc}/>
         </div>)
 }
-Game.prototype ={
+
+Game.prototype = {
     closeGame: Proptypes.function,
     weight: Proptypes.number.isRequired,
     height: Proptypes.number.isRequired,
