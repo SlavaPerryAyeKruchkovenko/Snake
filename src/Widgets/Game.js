@@ -25,11 +25,14 @@ function dropScore() {
 }
 
 function checkBodyOnCollision(snake, objLoc, radius, anotherFunc = null) {
-    return snake.getBody().some(el => {
-        if ((anotherFunc == null || anotherFunc(el)) && checkOnCollision(objLoc, el.position, radius)) {
-            return true;
+
+    let col = false
+     snake.getBody().forEach(el => {
+        if (!col && (anotherFunc == null || anotherFunc(el)) && checkOnCollision(objLoc, el.position, radius)) {
+            col = true
         }
     })
+    return col
 }
 
 function checkOnCollision(loc, secondLoc, radius) {
@@ -50,6 +53,8 @@ function keyPush(evt) {
             break
         case 40:
             if (vector.Y !== -1) vector = new Point(0, 1);
+            break
+        default:
             break
     }
 }
@@ -107,7 +112,7 @@ function Game(props) {
 }
 
 Game.prototype = {
-    closeGame: Proptypes.function,
+    closeGame: Proptypes.func,
     weight: Proptypes.number.isRequired,
     height: Proptypes.number.isRequired,
 }

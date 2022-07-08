@@ -4,8 +4,10 @@ import SnakeJpg from "../Assets/snake.jpg";
 
 const styles = {
     main: {
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
         margin: '0',
     },
     menu: {
@@ -13,8 +15,7 @@ const styles = {
         padding: '0px',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '50%',
-        height: '70%',
+        height: '50%',
         width: '70%',
         borderRadius: '20px',
     },
